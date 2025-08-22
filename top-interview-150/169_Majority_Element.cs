@@ -4,21 +4,30 @@
 // The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
 
 public class Solution {
-    public void Merge(int[] nums1, int m, int[] nums2, int n) {
-        int i = m - 1;
-        int j = n - 1;
-        int k = m + n -1;
+    public int MajorityElement(int[] nums) {
+        int size = nums.Length;
+        int i = 0;
+        int counter = 0;
+        int[] contador = new int[size];
 
-        while(j >= 0){
-            if(i >= 0 && nums1[i] > nums2[j]){
-                nums1[k] = nums1[i];
-                i--;
-            }else{
-                nums1[k] = nums2[j];
-                j--;
+        while(i < size){
+            if(contador[i] == 0){
+                counter = 0;
+                for(int j = i; j < size; j++){
+                    if(nums[j] == nums[i]){
+                        counter++;
+                        contador[j] = 1;
+                    }
+                }
+                if(counter > size/2){
+                    return nums[i];
+                }
             }
-            k--;
+            i++;
         }
+
+
+        return 0;
 
     }
 }
