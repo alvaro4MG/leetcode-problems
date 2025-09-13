@@ -9,24 +9,23 @@
 public class Solution {
     public int Jump(int[] nums) {
         int maxReach = 0;
-        int[] range = [0,0];    //experiment with range
-        int jumps = 0;
+        int range = 0;
+        int jumps = 1;
 
         if(nums.Length <= 2){
             return (nums.Length - 1);
         }
 
-        range = [1, nums[0]];
+        range = nums[0];
 
-        //while(maxReach < nums.Length){}
-        
-        for(int i = 0; maxReach < (nums.Length - 1) && i < nums.Length; i++){
-            jumps++;
-            while(i < nums.Length && i < range[1]){
+        for(int i = 0; range < (nums.Length - 1); i++){
+            if(i <= range){
                 maxReach = Math.Max(maxReach, i + nums[i]);
-                i++;
+            }else{
+                range = maxReach;
+                jumps++;
+                i--;
             }
-            
         }
 
         return jumps;
