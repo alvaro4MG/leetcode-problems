@@ -22,15 +22,45 @@ public class Solution {
 
         for(int i = 0; i < path.Length; i++){
             if(path[i] == '/'){
-                if(i != path.Length - 1){
-                    stack.Push("/");
-                    while(i < (path.Length - 1) && path[i+1] == '/'){
+                while(i < (path.Length - 1) && path[i+1] == '/'){
+                    i++;
+                }
+                
+            }else if(path[i] == '.'){
+                
+                if((i+1) < path.Length && path[i+1] == '.'){
+                    if((i+2) < path.Length && path[i+2] != '/'){
+                        //name of folder
+                        index = 0;
+                        while((i + index) < path.Length && path[i+index] != '/'){
+                            index++;
+                        }
+                        current = path.Substring(i, index);
+                        stack.Push(current);
+                        i += index;
+                    }else{
+                        //previous folder (..)
+                        if(stack.Count > 0){
+                            stack.Pop();
+                        }
                         i++;
                     }
+
+                }else{
+                    //current folder
+                    if(i+1 < path.Length && path[i+1] != '/'){
+                        index = 0;
+                        while((i + index) < path.Length && path[i+index] != '/'){
+                            index++;
+                        }
+                        current = path.Substring(i, index);
+                        stack.Push(current);
+                        i += index;
+                    }else{
+                        i++;
+                    }
+                    
                 }
-            }else if(path[i] == '.' && (i+1) < path.Length && path[i+1] == '.' && (i+2) < path.Length && path[i+2] != '.'){
-                stack.Pop();
-                i++;
             }else{
                 index = 0;
                 while((i + index) < path.Length && path[i+index] != '/'){
@@ -38,11 +68,11 @@ public class Solution {
                 }
                 current = path.Substring(i, index);
                 stack.Push(current);
-                i += index;
+                i += (index - 1);
             }
         }
         
-        current = string.Join("", stack.Reverse());
+        current = "/" + string.Join("/", stack.Reverse());
         return current;
     }
 }
