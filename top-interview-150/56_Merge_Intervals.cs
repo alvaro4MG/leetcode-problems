@@ -3,31 +3,50 @@
 // Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
 
 public class Solution {
-    public int[][] Merge(int[][] intervals) {
-        int[][] result;
-        int ranges = intervals.GetLength(0);    //ir disminuyendo si se quita un rango
-        int minRange = 10001;
-        int maxRange = -1;
 
-        //List<int[]> lista = new List<int[]>();
-        //lista.Add(new int[] { 0, 1 });
-
-        //intervals.Length = [0]*[1];   //para rectangular, todas las filas tienen el mismo tamaño, si varía es jagged y Length da el número de filas
-        //intervals.GetLength(0) = [0];
-        //intervals.GetLength(1) = [1];
-
-        while(true){
-            for(int i = 0; i < intervals.GetLength(0); i++){
-                if(intervals[i[0] < minRange]){
-                    minRange = intervals[i[0];
+    private void Sort(int[][] intervals){
+        int[] aux;
+        
+        for (int i = 0; i < (intervals.GetLength(0) - 1); i++) {
+            for (int j = 0; j < (intervals.GetLength(0) - i - 1); j++) {
+                if (intervals[j][0] > intervals[j + 1][0]) {
+                    aux = intervals[j];
+                    intervals[j] = intervals[j + 1];
+                    intervals[j + 1] = aux;
                 }
             }
-
-            //buscar si está en otro intervalo
-            //NO: se añade sin más 
-            //SI: mezclarlo
         }
 
-        return result:
+    }
+
+    public int[][] Merge(int[][] intervals) {
+
+        if(intervals.GetLength(0) < 2){
+            return intervals;
+        }
+
+        List<int[]> lista = new List<int[]>();
+        //Sort(intervals);
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+
+
+        int start = intervals[0][0];
+        int end = intervals[0][1];
+
+        for(int i = 0; i < intervals.GetLength(0); i++){
+            
+            if(intervals[i][0] <= end){
+                end = Math.Max(end, intervals[i][1]);
+            }else{
+                lista.Add(new int[] { start, end });
+                start = intervals[i][0];
+                end = intervals[i][1];
+            }
+            
+
+        }
+        lista.Add(new int[] { start, end });
+
+        return lista.ToArray();
     }
 }
