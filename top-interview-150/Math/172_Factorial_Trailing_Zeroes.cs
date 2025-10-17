@@ -12,20 +12,13 @@ public class Solution {
             return 0;
         }
 
-        int number = 1;
         int counter = 0;
 
-        for(int i = 1; i <= n; i++){
-            number = number * i;
-            if(number > 10000000){
-                number = number % 10000000;
-            }
-            if(number % 10 == 0){
-                counter++;
-                number = number / 10;
-            }
+        while(n > 0){
+            counter += n / 5;
+            n = n / 5;
         }
-        
+
         return counter;
     }
 }
