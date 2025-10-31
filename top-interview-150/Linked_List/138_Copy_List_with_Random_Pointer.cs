@@ -31,14 +31,26 @@ public class Node {
 public class Solution {
     public Node CopyRandomList(Node head) {
         Node newList = new Node(-1);
+        newList.random = head;
         Node pointer = newList;
+        Dictionary<Node,Node> map = new Dictionary<Node,Node>();
 
         while(head != null){
 
-            pointer.val = head.val;
-            pointer.next = head.next;
-            pointer.random = head.random;
+            pointer.next = new Node(head.val);
+            pointer = pointer.next;
+            map.Add(head, pointer);
+            head = head.next;
+        }
 
+
+        pointer = newList.next;
+        head = newList.random;
+
+        while(head != null){
+            if(head.random != null){
+                pointer.random = map[head.random];
+            }
             pointer = pointer.next;
             head = head.next;
         }
