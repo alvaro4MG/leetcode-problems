@@ -23,14 +23,33 @@ public class LRUCache {
     
     public int Get(int key) {
         
-        
+        if(cache.ContainsKey(key)){
+            // Adjust value of LRU
+
+            return key;
+        }
+
         return -1;
     }
     
     public void Put(int key, int value) {
-        
-        cache.Add(key, new LinkedListNode<(int key, int value)>((key, value)));
 
+        if (cache.ContainsKey(key)){
+            var node = cache[key];
+            node.Value = (key, value);
+            usageOrder.Remove(node);
+            usageOrder.AddFirst(node);
+            return;
+        }
+
+        if (cache.Count == maxCap){
+            cache.Remove(usageOrder.Last.Value.key);
+            usageOrder.RemoveLast();
+        }
+
+        var newNode = new LinkedListNode<(int,int)>((key, value));
+        cache.Add(key, newNode);
+        usageOrder.AddFirst(newNode);
     }
 }
 
