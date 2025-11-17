@@ -19,14 +19,18 @@ public class LRUCache {
     public LRUCache(int capacity) {
         maxCap = capacity;
         cache = new Dictionary<int, LinkedListNode<(int key, int value)>>();
+        usageOrder = new LinkedList<(int key, int value)>();
     }
     
     public int Get(int key) {
         
         if(cache.ContainsKey(key)){
-            // Adjust value of LRU
+            // Adjust value of LRU before return value
+            var node = cache[key];
+            usageOrder.Remove(node);
+            usageOrder.AddFirst(node);
 
-            return key;
+            return node.Value.value;
         }
 
         return -1;
