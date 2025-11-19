@@ -13,24 +13,47 @@
 public class LFUCache {
 
     private int maxCap;
-    Dictionary<int, LinkedListNode<(int key, int value)>> cache;
-    LinkedList<(int key, int value)> usageOrder;
+    Dictionary<int, int> cache;
+    Dictionary<int, int> keyFreq;
+    
+    Dictionary<int, LinkedList<int>> freqList;
+    Dictionary<int, LinkedListNode<int>> nodes;
+    int minFreq;
 
     public LFUCache(int capacity) {
         maxCap = capacity;
-        cache = new Dictionary<int, LinkedListNode<(int key, int value)>>();
-        usageOrder = new LinkedList<(int key, int value)>();
+        minFreq = 0;
+
+        cache = new Dictionary<int, int>();
+        keyFreq = new Dictionary<int, int>();
+
+        freqList = new Dictionary<int, LinkedList<int>>();
+        nodes = new Dictionary<int, LinkedListNode<int>>();
     }
     
     public int Get(int key) {
         
         if(cache.ContainsKey(key)){
             // Adjust value of LFU before return value
-            var node = cache[key];
-            usageOrder.Remove(node);
-            usageOrder.AddFirst(node);
+            var amount = cache[key];
+            var freq = keyFreq[key];
+            var node = nodes[key];
 
-            return node.Value.value;
+            freqList[freq].Remove(node);
+
+            if(freq == minFreq && freqList[minFreq].Count == 0){
+                minFreq++;
+            }
+            freq++;
+
+            if (!freqList.ContainsKey(freq)){
+                freqList[freq] = new LinkedList<int>();
+            }
+
+            freqList[freq].AddFirst(node);
+            keyFreq[key] = freq;
+
+            return amount;
         }
 
         return -1;
@@ -40,6 +63,9 @@ public class LFUCache {
 
         if (cache.ContainsKey(key)){
             var node = cache[key];
+            frequency[key].value++;
+
+
             node.Value = (key, value);
             usageOrder.Remove(node);
             usageOrder.AddFirst(node);
@@ -53,6 +79,7 @@ public class LFUCache {
 
         var newNode = new LinkedListNode<(int,int)>((key, value));
         cache.Add(key, newNode);
+        frequency[key] = 0;
         usageOrder.AddFirst(newNode);
     }
 }
