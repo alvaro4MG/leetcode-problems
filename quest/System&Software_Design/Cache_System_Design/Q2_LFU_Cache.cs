@@ -32,55 +32,69 @@ public class LFUCache {
     }
     
     public int Get(int key) {
-        
-        if(cache.ContainsKey(key)){
-            // Adjust value of LFU before return value
-            var amount = cache[key];
-            var freq = keyFreq[key];
-            var node = nodes[key];
-
-            freqList[freq].Remove(node);
-
-            if(freq == minFreq && freqList[minFreq].Count == 0){
-                minFreq++;
-            }
-            freq++;
-
-            if (!freqList.ContainsKey(freq)){
-                freqList[freq] = new LinkedList<int>();
-            }
-
-            freqList[freq].AddFirst(node);
-            keyFreq[key] = freq;
-
-            return amount;
+        if (!cache.ContainsKey(key)){
+            return -1;
         }
 
-        return -1;
+        int value = cache[key];
+        int freq = keyFreq[key];
+        var node = nodes[key];
+
+        freqList[freq].Remove(node);
+
+        if (freq == minFreq && freqList[freq].Count == 0){
+            minFreq++;
+        }
+
+        freq++;
+
+        if (!freqList.ContainsKey(freq)){
+            freqList[freq] = new LinkedList<int>();
+        }
+
+
+        freqList[freq].AddFirst(node);
+        keyFreq[key] = freq;
+
+        return value;
     }
     
     public void Put(int key, int value) {
 
-        if (cache.ContainsKey(key)){
-            var node = cache[key];
-            frequency[key].value++;
-
-
-            node.Value = (key, value);
-            usageOrder.Remove(node);
-            usageOrder.AddFirst(node);
+        if (maxCap == 0){
             return;
         }
 
-        if (cache.Count == maxCap){
-            cache.Remove(usageOrder.Last.Value.key);
-            usageOrder.RemoveLast();
+        if (cache.ContainsKey(key)){
+
+            cache[key] = value;
+            Get(key);  // Reuse exact same logic as Get
+            return;
         }
 
-        var newNode = new LinkedListNode<(int,int)>((key, value));
-        cache.Add(key, newNode);
-        frequency[key] = 0;
-        usageOrder.AddFirst(newNode);
+
+        if (cache.Count == maxCap) {
+            int oldKey = freqList[minFreq].Last.Value;
+
+            freqList[minFreq].RemoveLast();
+            cache.Remove(oldKey);
+            keyFreq.Remove(oldKey);
+            nodes.Remove(oldKey);
+        }
+
+        var newNode = new LinkedListNode<int>(key);
+
+        cache[key] = value;
+        keyFreq[key] = 1;
+        nodes[key] = newNode;
+
+        minFreq = 1;
+
+        if (!freqList.ContainsKey(1)){
+            freqList[1] = new LinkedList<int>();
+        }
+
+        freqList[1].AddFirst(newNode);
     }
 }
 
