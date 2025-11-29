@@ -6,15 +6,22 @@
 public class Solution {
 
     private int size;
+    private Dictionary<int, int> memory = new Dictionary<int, int>();   //<index, total>
 
     private int recursiveRob(int[] nums, int i){
 
-
-        if(i >= (size - 2)){
-            return nums[i];
+        if(i >= size){
+            return 0;
         }
 
-        return nums[i] + recursiveRob(nums, i+2);
+        if(memory.ContainsKey(i)){
+            return memory[i];
+        }
+
+        memory[i] = Math.Max(nums[i] + recursiveRob(nums,i+2), recursiveRob(nums,i+1));
+
+
+        return memory[i];
     }
 
 
@@ -25,7 +32,7 @@ public class Solution {
             return nums[0];
         }
 
-        return Math.Max(recursiveRob(nums, 0), recursiveRob(nums,1));
+        return recursiveRob(nums, 0);
 
     }
 }
