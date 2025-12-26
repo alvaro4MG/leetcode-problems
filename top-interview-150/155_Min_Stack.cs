@@ -11,22 +11,22 @@
 
 public class MinStack {
 
-    private Vector<int> stack;
+    private Stack<int> stack;
     private int index;
     private int minimum;
 
     public MinStack() {
-        stack = new Vector<int>();
+        stack = new Stack<int>();
         index = 0;
-        minimum = null;
+        minimum = int.MaxValue;
     }
     
     public void Push(int val) {
 
-        if(index < stack.Count-1){
+        if(index < stack.Count){
             stack[index] = val;
         }else{
-            stack.push_back(val);
+            stack.Add(val);
         }
         index++;
 
