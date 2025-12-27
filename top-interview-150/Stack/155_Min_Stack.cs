@@ -12,41 +12,37 @@
 public class MinStack {
 
     private Stack<int> stack;
-    private int index;
-    private int minimum;
+    private Stack<int> minimum;
 
     public MinStack() {
         stack = new Stack<int>();
-        index = 0;
-        minimum = int.MaxValue;
+        minimum = new Stack<int>();
     }
     
     public void Push(int val) {
 
-        if(index < stack.Count){
-            stack[index] = val;
-        }else{
-            stack.Add(val);
-        }
-        index++;
+        stack.Push(val);
 
-        if(val < minimum){
-            minimum = val;
+        if(minimum.Count == 0 || val <= minimum.Peek()){
+            minimum.Push(val);
         }
     }
     
     public void Pop() {
-        index--;
+        int val = stack.Pop();
 
         //check if minimum
+        if(minimum.Count > 0 && val == minimum.Peek()){
+            minimum.Pop();
+        }
     }
     
     public int Top() {
-        return stack[index];
+        return stack.Peek();
     }
     
     public int GetMin() {
-        return minimum;
+        return minimum.Peek();
     }
 }
 
