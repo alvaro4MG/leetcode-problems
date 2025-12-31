@@ -30,11 +30,12 @@ public class Solution {
                 root.right = root.left;
                 root.left = null;
             }else{
-                TreeNode aux = stack.Pop();
-                root.right = aux;
+                if(stack.Count > 0){
+                    root.right = stack.Pop();
+                }
             }
             root = root.right;
-            
+
         }
 
     }
