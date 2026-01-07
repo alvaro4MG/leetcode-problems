@@ -6,32 +6,20 @@
 // Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
 
 class Solution {
-private:
-
 public:
     int removeDuplicates(vector<int>& nums) {
 
-        if(nums.size() == 1){
-            return 0;
+        if(nums.size() <= 2){
+            return nums.size();
         }
 
-        int i = 0;
-        int j = 1;
-
-        while( j < nums.size() ){
-            
-            if(nums[i] == nums[j]){
-                j++;
-                while(nums[i] == nums[j]){
-                    j++;
-                }
-                nums[i+1] = nums[j];
+        int write = 2;
+        for(int read = 2; read < nums.size(); read++){
+            if(nums[read] != nums[write - 2]){
+                nums[write] = nums[read];
+                write++;
             }
-
-            i++;
-            j++;
         }
-
-        return i;
+        return write;
     }
 };
